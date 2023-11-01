@@ -1,0 +1,27 @@
+[package]
+name = "bevy_vello_renderer"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+bevy_ecs = { version = "0.11", default-features = false }
+bevy_render = { version = "0.11", default-features = false }
+bevy_window = { version = "0.11", default-features = false }
+bevy_asset = { version = "0.11", default-features = false }
+bevy_transform = { version = "0.11", default-features = false }
+bevy_reflect = { version = "0.11", default-features = false }
+bevy_utils = { version = "0.11", default-features = false }
+bevy_log = { version = "0.11", default-features = false }
+bevy_app = { version = "0.11", default-features = false }
+bevy_time = { version = "0.11", default-features = false }
+bevy_math = { version = "0.11", default-features = false }
+bevy_sprite = { version = "0.11", default-features = false }
+vello = { git = "https://github.com/nixon-voxell/vello", rev = "b0303ccf98df15a8b196272720d364a56f7304ba" }
+vello_svg = { git = "https://github.com/linebender/vello", rev = "b0303ccf98df15a8b196272720d364a56f7304ba" }
+
+[dev-dependencies]
+bevy = "0.11"
+
+[[example]]
+name = "hello_world"
+path = "examples/hello_world.rs"
