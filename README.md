@@ -1,5 +1,5 @@
 # Bevy Vello Renderer
-A minimal integration for rendering Vello graphics in [Bevy](https://bevyengine.org/).
+A minimal integration for rendering [Vello](https://github.com/linebender/vello) graphics in [Bevy](https://bevyengine.org/).
 
 ![hello_world gif](./.github/assets/hello_world.gif)
 
