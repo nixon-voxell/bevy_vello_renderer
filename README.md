@@ -1,5 +1,5 @@
 # Bevy Vello Renderer
-A minimal integration for rendering Vello graphics in Bevy game engine.
+A minimal integration for rendering Vello graphics in [Bevy](https://bevyengine.org/).
 
 ![hello_world gif](./.github/assets/hello_world.gif)
 
