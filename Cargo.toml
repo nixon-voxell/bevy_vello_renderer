@@ -2,6 +2,13 @@
 name = "bevy_vello_renderer"
 version = "0.1.0"
 edition = "2021"
+categories = ["vector-graphics", "graphics", "gui", "rendering", "motion-graphics"]
+description = "A minimal integration for rendering Vello graphics in Bevy."
+exclude = ["assets/", "tools/", ".github/", "crates/", "examples/wasm/assets/"]
+keywords = ["vector-graphics", "graphics", "vello", "motion-graphics"]
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/nixon-voxell/bevy_vello_renderer"
 
 [dependencies]
 bevy_ecs = { version = "0.11", default-features = false }
