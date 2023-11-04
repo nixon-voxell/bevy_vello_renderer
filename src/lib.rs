@@ -16,6 +16,8 @@ pub mod render_pipeline;
 pub mod vello_fragment;
 
 pub mod prelude {
+    pub use vello;
+
     pub use super::vello_fragment::{VelloFragment, VelloFragmentBundle};
     pub use super::VelloRenderPlugin;
 }
