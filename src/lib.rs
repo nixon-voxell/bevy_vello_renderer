@@ -1,4 +1,5 @@
 pub use vello;
+pub use vello_svg;
 
 use bevy_app::prelude::*;
 use bevy_asset::{load_internal_asset, prelude::*};
