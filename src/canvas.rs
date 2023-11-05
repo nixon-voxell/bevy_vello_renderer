@@ -1,5 +1,3 @@
-//! A shader that samples a texture with view-independent UV coordinates.
-
 use bevy_asset::prelude::*;
 use bevy_ecs::prelude::*;
 use bevy_log::prelude::*;
@@ -38,7 +36,7 @@ impl ExtractResource for VelloCanvas {
     }
 }
 
-#[derive(AsBindGroup, TypeUuid, TypePath, Clone)]
+#[derive(Asset, AsBindGroup, TypeUuid, TypePath, Clone)]
 #[uuid = "b62bb455-a72c-4b56-87bb-81e0554e234f"]
 pub struct CanvasMaterial {
     #[texture(0)]
@@ -48,11 +46,11 @@ pub struct CanvasMaterial {
 
 impl Material2d for CanvasMaterial {
     fn vertex_shader() -> ShaderRef {
-        SSRT_SHADER_HANDLE.typed().into()
+        SSRT_SHADER_HANDLE.into()
     }
 
     fn fragment_shader() -> ShaderRef {
-        SSRT_SHADER_HANDLE.typed().into()
+        SSRT_SHADER_HANDLE.into()
     }
 
     fn specialize(
@@ -170,7 +168,7 @@ pub fn resize_canvas_image(
         return;
     };
 
-    if evr_window_resize.iter().last().is_some() {
+    if evr_window_resize.read().last().is_some() {
         let size = Extent3d {
             width: window.resolution.physical_width(),
             height: window.resolution.physical_height(),

@@ -20,6 +20,8 @@ use crate::{
 #[derive(Resource)]
 pub struct VelloRenderer(Renderer);
 
+unsafe impl Sync for VelloRenderer {}
+
 impl FromWorld for VelloRenderer {
     fn from_world(world: &mut World) -> Self {
         let device = world.get_resource::<RenderDevice>().unwrap();
@@ -27,8 +29,11 @@ impl FromWorld for VelloRenderer {
         VelloRenderer(
             Renderer::new(
                 device.wgpu_device(),
-                &RendererOptions {
+                RendererOptions {
                     surface_format: None,
+                    timestamp_period: 0.0,
+                    use_cpu: false,
+                    antialiasing_support: vello::AaSupport::all(),
                 },
             )
             .expect("no gpu device"),
@@ -48,7 +53,7 @@ pub fn extract_fragment_instances(
             Entity,
             &Handle<VelloFragment>,
             &GlobalTransform,
-            &ComputedVisibility,
+            &ViewVisibility,
         )>,
     >,
     mut previous_len: Local<usize>,
@@ -56,8 +61,8 @@ pub fn extract_fragment_instances(
     let mut instances: Vec<(Entity, ExtractedVelloFragmentInstance)> =
         Vec::with_capacity(*previous_len);
 
-    for (entity, fragment_handle, global_transform, computed_visibilty) in q_fragments.iter() {
-        if computed_visibilty.is_visible() == false {
+    for (entity, fragment_handle, global_transform, view_visibilty) in q_fragments.iter() {
+        if view_visibilty.get() == false {
             continue;
         }
 
@@ -192,6 +197,7 @@ pub fn render_scene(
                     base_color: vello::peniko::Color::TRANSPARENT,
                     width: gpu_image.size.x as u32,
                     height: gpu_image.size.y as u32,
+                    antialiasing_method: vello::AaConfig::Area,
                 },
             )
             .unwrap();

@@ -5,7 +5,6 @@ use bevy_app::prelude::*;
 use bevy_asset::{load_internal_asset, prelude::*};
 use bevy_ecs::prelude::*;
 use bevy_log::prelude::*;
-use bevy_reflect::TypeUuid;
 use bevy_render::{
     extract_resource::ExtractResourcePlugin, prelude::*, render_asset::RenderAssetPlugin, Render,
     RenderApp, RenderSet,
@@ -23,8 +22,8 @@ pub mod prelude {
     pub use super::VelloRenderPlugin;
 }
 
-const SSRT_SHADER_HANDLE: HandleUntyped =
-    HandleUntyped::weak_from_u64(Shader::TYPE_UUID, 2314894693238056781);
+const SSRT_SHADER_HANDLE: Handle<Shader> =
+    Handle::<Shader>::weak_from_u128(297150281341545723940939177574271201838);
 
 pub struct VelloRenderPlugin;
 
@@ -42,8 +41,8 @@ impl Plugin for VelloRenderPlugin {
             Material2dPlugin::<canvas::CanvasMaterial>::default(),
             ExtractResourcePlugin::<canvas::VelloCanvas>::default(),
         ))
-        .add_asset::<VelloFragment>()
-        .add_asset::<CanvasMaterial>()
+        .init_asset::<VelloFragment>()
+        .init_asset::<CanvasMaterial>()
         .add_systems(PreStartup, canvas::setup_canvas)
         .add_systems(PreUpdate, canvas::resize_canvas_image);
 

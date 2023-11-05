@@ -10,15 +10,16 @@ use vello::SceneFragment;
 #[derive(Bundle, Default, Clone)]
 pub struct VelloFragmentBundle {
     pub fragment: Handle<VelloFragment>,
-    pub transform: Transform,
-    pub global_transform: GlobalTransform,
-    /// Enables or disables the fragment
+    pub transform: TransformBundle,
+    /// The visibility of the entity.
     pub visibility: Visibility,
-    /// Algorithmically-computed indication of whether an entity is visible and should be extracted for rendering
-    pub computed_visibility: ComputedVisibility,
+    // The inherited visibility of the entity.
+    pub inherited_visibility: InheritedVisibility,
+    // The computed visibility of the entity.
+    pub view_visibility: ViewVisibility,
 }
 
-#[derive(TypeUuid, TypePath, Clone)]
+#[derive(Asset, TypeUuid, TypePath, Clone)]
 #[uuid = "0ee4b8fa-fbee-49f6-bcfe-7d517ff94d40"]
 pub struct VelloFragment {
     pub fragment: Arc<SceneFragment>,
