@@ -23,8 +23,8 @@ bevy_app = { version = "0.12", default-features = false }
 bevy_time = { version = "0.12", default-features = false }
 bevy_math = { version = "0.12", default-features = false }
 bevy_sprite = { version = "0.12", default-features = false }
-vello = { git = "https://github.com/nixon-voxell/vello", rev = "ec8867a8bbb1dffffc2e79223723193344284106" }
-vello_svg = { git = "https://github.com/nixon-voxell/vello", rev = "ec8867a8bbb1dffffc2e79223723193344284106" }
+vello = { git = "https://github.com/nixon-voxell/vello", rev = "78aa9e805d68288bc72c5f74dfe2159b7538bf30" }
+vello_svg = { git = "https://github.com/nixon-voxell/vello", rev = "78aa9e805d68288bc72c5f74dfe2159b7538bf30" }
 
 [dev-dependencies]
 bevy = "0.12"
