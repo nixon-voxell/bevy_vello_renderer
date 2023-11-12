@@ -10,6 +10,7 @@ use bevy_render::{
     Extract,
 };
 use bevy_transform::prelude::*;
+use bevy_utils::synccell::SyncCell;
 use vello::{kurbo::Affine, RenderParams, Renderer, RendererOptions, Scene, SceneBuilder};
 
 use crate::{
@@ -18,15 +19,13 @@ use crate::{
 };
 
 #[derive(Resource)]
-pub struct VelloRenderer(Renderer);
-
-unsafe impl Sync for VelloRenderer {}
+pub struct VelloRenderer(SyncCell<Renderer>);
 
 impl FromWorld for VelloRenderer {
     fn from_world(world: &mut World) -> Self {
         let device = world.get_resource::<RenderDevice>().unwrap();
 
-        VelloRenderer(
+        VelloRenderer(SyncCell::new(
             Renderer::new(
                 device.wgpu_device(),
                 RendererOptions {
@@ -37,7 +36,7 @@ impl FromWorld for VelloRenderer {
                 },
             )
             .expect("no gpu device"),
-        )
+        ))
     }
 }
 
@@ -188,6 +187,7 @@ pub fn render_scene(
     if !vector_render_queue.is_empty() {
         vello_renderer
             .0
+            .get()
             .render_to_texture(
                 device.wgpu_device(),
                 &queue,
