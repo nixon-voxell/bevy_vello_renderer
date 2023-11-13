@@ -152,7 +152,7 @@ pub fn setup_canvas(
             mesh,
             material,
             transform: Transform::from_translation(0.001 * Vec3::NEG_Z), // Make sure the vello canvas renders behind Gizmos
-            ..Default::default()
+            ..default()
         })
         .insert(NoFrustumCulling);
 }

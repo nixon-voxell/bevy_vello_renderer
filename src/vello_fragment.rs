@@ -7,7 +7,7 @@ use bevy_render::{prelude::*, render_asset::RenderAsset};
 use bevy_transform::prelude::*;
 use vello::SceneFragment;
 
-#[derive(Bundle, Default, Clone)]
+#[derive(Bundle, Clone, Default)]
 pub struct VelloFragmentBundle {
     pub fragment: Handle<VelloFragment>,
     pub transform: TransformBundle,
