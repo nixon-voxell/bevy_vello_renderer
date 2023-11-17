@@ -19,7 +19,7 @@ pub struct VelloFragmentBundle {
     pub view_visibility: ViewVisibility,
 }
 
-#[derive(Asset, TypeUuid, TypePath, Clone)]
+#[derive(Asset, TypeUuid, TypePath, Clone, Default)]
 #[uuid = "0ee4b8fa-fbee-49f6-bcfe-7d517ff94d40"]
 pub struct VelloFragment {
     pub fragment: Arc<SceneFragment>,
