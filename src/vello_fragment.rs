@@ -10,7 +10,10 @@ use vello::SceneFragment;
 #[derive(Bundle, Clone, Default)]
 pub struct VelloFragmentBundle {
     pub fragment: Handle<VelloFragment>,
-    pub transform: TransformBundle,
+    /// Local transform of the entity,
+    pub transform: Transform,
+    /// Global transform of the entity,
+    pub global_transform: GlobalTransform,
     /// The visibility of the entity.
     pub visibility: Visibility,
     // The inherited visibility of the entity.

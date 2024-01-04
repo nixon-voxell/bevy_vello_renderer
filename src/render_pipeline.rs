@@ -101,7 +101,7 @@ pub fn prepare_fragment_affines(
         ])
         .transpose();
 
-        // The vello scene transform is world-space for all normal vectors and screen-space for UI vectors
+        // The vello scene transform is world-space
         let raw_transform = {
             let mut model_matrix = fragment_instance.global_transform.compute_matrix();
             model_matrix.w_axis.y *= -1.0;
