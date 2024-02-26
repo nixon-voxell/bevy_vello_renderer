@@ -11,23 +11,23 @@ readme = "README.md"
 repository = "https://github.com/nixon-voxell/bevy_vello_renderer"
 
 [dependencies]
-bevy_ecs = { version = "0.12", default-features = false }
-bevy_render = { version = "0.12", default-features = false }
-bevy_window = { version = "0.12", default-features = false }
-bevy_asset = { version = "0.12", default-features = false }
-bevy_transform = { version = "0.12", default-features = false }
-bevy_reflect = { version = "0.12", default-features = false }
-bevy_utils = { version = "0.12", default-features = false }
-bevy_log = { version = "0.12", default-features = false }
-bevy_app = { version = "0.12", default-features = false }
-bevy_time = { version = "0.12", default-features = false }
-bevy_math = { version = "0.12", default-features = false }
-bevy_sprite = { version = "0.12", default-features = false }
-vello = { git = "https://github.com/nixon-voxell/vello", rev = "78aa9e805d68288bc72c5f74dfe2159b7538bf30" }
-vello_svg = { git = "https://github.com/nixon-voxell/vello", rev = "78aa9e805d68288bc72c5f74dfe2159b7538bf30" }
+bevy_ecs = { version = "0.13", default-features = false }
+bevy_render = { version = "0.13", default-features = false }
+bevy_window = { version = "0.13", default-features = false }
+bevy_asset = { version = "0.13", default-features = false }
+bevy_transform = { version = "0.13", default-features = false }
+bevy_reflect = { version = "0.13", default-features = false }
+bevy_utils = { version = "0.13", default-features = false }
+bevy_log = { version = "0.13", default-features = false }
+bevy_app = { version = "0.13", default-features = false }
+bevy_time = { version = "0.13", default-features = false }
+bevy_math = { version = "0.13", default-features = false }
+bevy_sprite = { version = "0.13", default-features = false }
+vello = { git = "https://github.com/nixon-voxell/vello", rev = "ffa808a698149accf51b2c2f38136208020e554a" }
+vello_svg = { git = "https://github.com/nixon-voxell/vello", rev = "ffa808a698149accf51b2c2f38136208020e554a" }
 
 [dev-dependencies]
-bevy = "0.12"
+bevy = "0.13"
 
 [[example]]
 name = "hello_world"

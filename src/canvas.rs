@@ -2,11 +2,12 @@ use bevy_asset::prelude::*;
 use bevy_ecs::prelude::*;
 use bevy_log::prelude::*;
 use bevy_math::prelude::*;
-use bevy_reflect::{TypePath, TypeUuid};
+use bevy_reflect::TypePath;
 use bevy_render::{
     extract_resource::ExtractResource,
     mesh::{Indices, MeshVertexBufferLayout},
     prelude::*,
+    render_asset::RenderAssetUsages,
     render_resource::{
         AsBindGroup, Extent3d, PrimitiveTopology, RenderPipelineDescriptor, ShaderRef,
         SpecializedMeshPipelineError, TextureDescriptor, TextureDimension, TextureFormat,
@@ -36,8 +37,7 @@ impl ExtractResource for VelloCanvas {
     }
 }
 
-#[derive(Asset, AsBindGroup, TypeUuid, TypePath, Clone)]
-#[uuid = "b62bb455-a72c-4b56-87bb-81e0554e234f"]
+#[derive(Asset, AsBindGroup, TypePath, Clone)]
 pub struct CanvasMaterial {
     #[texture(0)]
     #[sampler(1)]
@@ -115,7 +115,10 @@ pub fn setup_canvas(
 
     // Create or get quad mesh for the canvas to draw to.
     let mesh_handle = canvas_mesh_handle.get_or_insert_with(|| {
-        let mut canvas_quad = Mesh::new(PrimitiveTopology::TriangleList);
+        let mut canvas_quad = Mesh::new(
+            PrimitiveTopology::TriangleList,
+            RenderAssetUsages::RENDER_WORLD,
+        );
 
         let mut v_pos = vec![[-1.0, -1.0, 0.0]];
         v_pos.push([1.0, -1.0, 0.0]);
@@ -130,7 +133,7 @@ pub fn setup_canvas(
         canvas_quad.insert_attribute(Mesh::ATTRIBUTE_UV_0, v_pos);
 
         let indices = vec![0, 1, 2, 0, 2, 3];
-        canvas_quad.set_indices(Some(Indices::U32(indices)));
+        canvas_quad.insert_indices(Indices::U32(indices));
 
         meshes.add(canvas_quad)
     });

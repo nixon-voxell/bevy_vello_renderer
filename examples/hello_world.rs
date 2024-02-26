@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 use bevy_vello_renderer::prelude::*;
-use vello::{kurbo, peniko, SceneBuilder, SceneFragment};
+use vello::{kurbo, peniko, Scene};
 
 fn main() {
     App::new()
@@ -11,11 +11,10 @@ fn main() {
         .run();
 }
 
-fn setup(mut commands: Commands, mut fragments: ResMut<Assets<VelloFragment>>) {
-    let mut fragment: SceneFragment = SceneFragment::new();
-    let mut sb: SceneBuilder = SceneBuilder::for_fragment(&mut fragment);
+fn setup(mut commands: Commands, mut fragments: ResMut<Assets<VelloScene>>) {
+    let mut scene: Scene = Scene::new();
 
-    sb.fill(
+    scene.fill(
         peniko::Fill::NonZero,
         kurbo::Affine::default(),
         &peniko::Color::WHITE_SMOKE,
@@ -25,16 +24,16 @@ fn setup(mut commands: Commands, mut fragments: ResMut<Assets<VelloFragment>>) {
 
     commands.spawn(Camera2dBundle::default());
 
-    commands.spawn(VelloFragmentBundle {
-        fragment: fragments.add(VelloFragment {
-            fragment: fragment.into(),
+    commands.spawn(VelloSceneBundle {
+        scene: fragments.add(VelloScene {
+            scene: scene.into(),
         }),
         ..default()
     });
 }
 
 fn simple_animation(
-    mut q_transforms: Query<&mut Transform, With<Handle<VelloFragment>>>,
+    mut q_transforms: Query<&mut Transform, With<Handle<VelloScene>>>,
     time: Res<Time>,
 ) {
     let sin_time: f32 = time.elapsed_seconds().sin().mul_add(0.5, 0.5);

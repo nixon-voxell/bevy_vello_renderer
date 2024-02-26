@@ -1,3 +1,5 @@
+use std::num::NonZeroUsize;
+
 use bevy_asset::prelude::*;
 use bevy_ecs::prelude::*;
 use bevy_math::prelude::*;
@@ -11,11 +13,11 @@ use bevy_render::{
 };
 use bevy_transform::prelude::*;
 use bevy_utils::synccell::SyncCell;
-use vello::{kurbo::Affine, RenderParams, Renderer, RendererOptions, Scene, SceneBuilder};
+use vello::{kurbo, RenderParams, Renderer, RendererOptions, Scene};
 
 use crate::{
     canvas::VelloCanvas,
-    vello_fragment::{ExtractedVelloFragmentInstance, VelloFragment},
+    vello_fragment::{ExtractedVelloSceneInstance, VelloScene},
 };
 
 #[derive(Resource)]
@@ -30,9 +32,9 @@ impl FromWorld for VelloRenderer {
                 device.wgpu_device(),
                 RendererOptions {
                     surface_format: None,
-                    timestamp_period: 0.0,
+                    num_init_threads: NonZeroUsize::new(1),
+                    antialiasing_support: vello::AaSupport::area_only(),
                     use_cpu: false,
-                    antialiasing_support: vello::AaSupport::all(),
                 },
             )
             .expect("no gpu device"),
@@ -41,7 +43,7 @@ impl FromWorld for VelloRenderer {
 }
 
 #[derive(Component, Copy, Clone)]
-pub struct PreparedAffine(pub Affine);
+pub struct PreparedAffine(pub kurbo::Affine);
 
 // Extract ========================================
 
@@ -50,14 +52,14 @@ pub fn extract_fragment_instances(
     q_fragments: Extract<
         Query<(
             Entity,
-            &Handle<VelloFragment>,
+            &Handle<VelloScene>,
             &GlobalTransform,
             &ViewVisibility,
         )>,
     >,
     mut previous_len: Local<usize>,
 ) {
-    let mut instances: Vec<(Entity, ExtractedVelloFragmentInstance)> =
+    let mut instances: Vec<(Entity, ExtractedVelloSceneInstance)> =
         Vec::with_capacity(*previous_len);
 
     for (entity, fragment_handle, global_transform, view_visibilty) in q_fragments.iter() {
@@ -67,8 +69,8 @@ pub fn extract_fragment_instances(
 
         instances.push((
             entity,
-            ExtractedVelloFragmentInstance {
-                fragment_handle: fragment_handle.clone(),
+            ExtractedVelloSceneInstance {
+                scene_handle: fragment_handle.clone(),
                 global_transform: global_transform.clone(),
             },
         ))
@@ -83,7 +85,7 @@ pub fn extract_fragment_instances(
 pub fn prepare_fragment_affines(
     mut commands: Commands,
     q_camera: Query<(&ExtractedCamera, &ExtractedView)>,
-    q_fragment_instances: Query<(Entity, &ExtractedVelloFragmentInstance)>,
+    q_fragment_instances: Query<(Entity, &ExtractedVelloSceneInstance)>,
 ) {
     let Ok((camera, view)) = q_camera.get_single() else {
         return;
@@ -134,7 +136,7 @@ pub fn prepare_fragment_affines(
 
         commands
             .entity(entity)
-            .insert(PreparedAffine(Affine::new(transform)));
+            .insert(PreparedAffine(kurbo::Affine::new(transform)));
     }
 }
 
@@ -144,8 +146,8 @@ pub fn prepare_fragment_affines(
 /// a scene, and renders the scene to a texture with WGPU
 #[allow(clippy::complexity)]
 pub fn render_scene(
-    q_fragment_instances: Query<(&ExtractedVelloFragmentInstance, &PreparedAffine)>,
-    fragments: Res<RenderAssets<VelloFragment>>,
+    q_fragment_instances: Query<(&ExtractedVelloSceneInstance, &PreparedAffine)>,
+    scenes: Res<RenderAssets<VelloScene>>,
     mut vello_renderer: ResMut<VelloRenderer>,
     vello_canvas: Res<VelloCanvas>,
     gpu_images: Res<RenderAssets<Image>>,
@@ -157,10 +159,10 @@ pub fn render_scene(
     };
 
     let mut scene = Scene::default();
-    let mut builder = SceneBuilder::for_scene(&mut scene);
+    // let mut builder = SceneBuilder::for_scene(&mut scene);
 
     // Background items: z ordered
-    let mut vector_render_queue: Vec<(&ExtractedVelloFragmentInstance, &PreparedAffine)> =
+    let mut vector_render_queue: Vec<(&ExtractedVelloSceneInstance, &PreparedAffine)> =
         q_fragment_instances.iter().collect();
     vector_render_queue.sort_by(|(a, _), (b, _)| {
         let a = a.global_transform.translation().z;
@@ -171,17 +173,18 @@ pub fn render_scene(
     // Apply transforms to the respective fragments and add them to the
     // scene to be rendered
     for (
-        ExtractedVelloFragmentInstance {
-            fragment_handle, ..
+        ExtractedVelloSceneInstance {
+            scene_handle: fragment_handle,
+            ..
         },
         PreparedAffine(affine),
     ) in vector_render_queue.iter()
     {
-        let Some(fragment) = fragments.get(fragment_handle) else {
+        let Some(vello_scene) = scenes.get(fragment_handle) else {
             continue;
         };
 
-        builder.append(&fragment.fragment, Some(*affine));
+        scene.append(&vello_scene.scene, Some(*affine));
     }
 
     if !vector_render_queue.is_empty() {

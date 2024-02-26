@@ -11,14 +11,14 @@ use bevy_render::{
 };
 use bevy_sprite::Material2dPlugin;
 use canvas::CanvasMaterial;
-use vello_fragment::VelloFragment;
+use vello_fragment::VelloScene;
 
 pub mod canvas;
 pub mod render_pipeline;
 pub mod vello_fragment;
 
 pub mod prelude {
-    pub use super::vello_fragment::{VelloFragment, VelloFragmentBundle};
+    pub use super::vello_fragment::{VelloScene, VelloSceneBundle};
     pub use super::VelloRenderPlugin;
 }
 
@@ -37,11 +37,11 @@ impl Plugin for VelloRenderPlugin {
         );
 
         app.add_plugins((
-            RenderAssetPlugin::<VelloFragment>::default(),
+            RenderAssetPlugin::<VelloScene>::default(),
             Material2dPlugin::<canvas::CanvasMaterial>::default(),
             ExtractResourcePlugin::<canvas::VelloCanvas>::default(),
         ))
-        .init_asset::<VelloFragment>()
+        .init_asset::<VelloScene>()
         .init_asset::<CanvasMaterial>()
         .add_systems(PreStartup, canvas::setup_canvas)
         .add_systems(PreUpdate, canvas::resize_canvas_image);

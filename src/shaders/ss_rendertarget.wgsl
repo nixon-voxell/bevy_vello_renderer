@@ -1,11 +1,8 @@
 #import bevy_render::view View
 
-@group(0) @binding(0)
-var<uniform> view: View;
-@group(1) @binding(0)
-var texture: texture_2d<f32>;
-@group(1) @binding(1)
-var texture_sampler: sampler;
+@group(0) @binding(0) var<uniform> view: View;
+@group(2) @binding(0) var texture: texture_2d<f32>;
+@group(2) @binding(1) var texture_sampler: sampler;
 
 // returns the (0-1, 0-1) position within the given viewport for the current buffer coords .
 // buffer coords can be obtained from `@builtin(position).xy`.
@@ -21,7 +18,7 @@ struct Vertex {
 
 struct VertexOutput {
     @builtin(position) clip_position: vec4<f32>,
-    #import bevy_sprite::mesh2d_vertex_output
+    // #import bevy_sprite::mesh2d_vertex_output
 };
 
 @vertex
@@ -52,7 +49,7 @@ fn linear_from_srgba(srgba: vec4<f32>) -> vec4<f32> {
 @fragment
 fn fragment(
     @builtin(position) position: vec4<f32>,
-    #import bevy_sprite::mesh2d_vertex_output
+    // #import bevy_sprite::mesh2d_vertex_output
 ) -> @location(0) vec4<f32> {
     let uvs = coords_to_viewport_uv(position.xy, view.viewport);
     let color = textureSample(texture, texture_sampler, uvs);

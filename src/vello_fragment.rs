@@ -2,14 +2,17 @@ use std::sync::Arc;
 
 use bevy_asset::prelude::*;
 use bevy_ecs::{prelude::*, system::SystemParamItem};
-use bevy_reflect::{TypePath, TypeUuid};
-use bevy_render::{prelude::*, render_asset::RenderAsset};
+use bevy_reflect::TypePath;
+use bevy_render::{
+    prelude::*,
+    render_asset::{RenderAsset, RenderAssetUsages},
+};
 use bevy_transform::prelude::*;
-use vello::SceneFragment;
+use vello::Scene;
 
 #[derive(Bundle, Clone, Default)]
-pub struct VelloFragmentBundle {
-    pub fragment: Handle<VelloFragment>,
+pub struct VelloSceneBundle {
+    pub scene: Handle<VelloScene>,
     /// Local transform of the entity,
     pub transform: Transform,
     /// Global transform of the entity,
@@ -22,36 +25,30 @@ pub struct VelloFragmentBundle {
     pub view_visibility: ViewVisibility,
 }
 
-#[derive(Asset, TypeUuid, TypePath, Clone, Default)]
-#[uuid = "0ee4b8fa-fbee-49f6-bcfe-7d517ff94d40"]
-pub struct VelloFragment {
-    pub fragment: Arc<SceneFragment>,
+#[derive(Asset, TypePath, Clone, Default)]
+pub struct VelloScene {
+    pub scene: Arc<Scene>,
 }
 
-impl RenderAsset for VelloFragment {
-    type ExtractedAsset = Self;
-
+impl RenderAsset for VelloScene {
     type PreparedAsset = Self;
 
     type Param = ();
 
-    fn extract_asset(&self) -> Self::ExtractedAsset {
-        self.clone()
+    fn asset_usage(&self) -> RenderAssetUsages {
+        RenderAssetUsages::RENDER_WORLD
     }
 
     fn prepare_asset(
-        extracted_asset: Self::ExtractedAsset,
+        self,
         _param: &mut SystemParamItem<Self::Param>,
-    ) -> Result<
-        Self::PreparedAsset,
-        bevy_render::render_asset::PrepareAssetError<Self::ExtractedAsset>,
-    > {
-        Ok(extracted_asset)
+    ) -> Result<Self::PreparedAsset, bevy_render::render_asset::PrepareAssetError<Self>> {
+        Ok(self)
     }
 }
 
 #[derive(Component, Clone)]
-pub struct ExtractedVelloFragmentInstance {
-    pub fragment_handle: Handle<VelloFragment>,
+pub struct ExtractedVelloSceneInstance {
+    pub scene_handle: Handle<VelloScene>,
     pub global_transform: GlobalTransform,
 }
