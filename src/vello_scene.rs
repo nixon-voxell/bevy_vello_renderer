@@ -36,7 +36,7 @@ impl RenderAsset for VelloScene {
     type Param = ();
 
     fn asset_usage(&self) -> RenderAssetUsages {
-        RenderAssetUsages::RENDER_WORLD
+        RenderAssetUsages::MAIN_WORLD | RenderAssetUsages::RENDER_WORLD
     }
 
     fn prepare_asset(
