@@ -11,14 +11,14 @@ use bevy_render::{
 };
 use bevy_sprite::Material2dPlugin;
 use canvas::CanvasMaterial;
-use vello_fragment::VelloScene;
+use vello_scene::VelloScene;
 
 pub mod canvas;
 pub mod render_pipeline;
-pub mod vello_fragment;
+pub mod vello_scene;
 
 pub mod prelude {
-    pub use super::vello_fragment::{VelloScene, VelloSceneBundle};
+    pub use super::vello_scene::{VelloScene, VelloSceneBundle};
     pub use super::VelloRenderPlugin;
 }
 

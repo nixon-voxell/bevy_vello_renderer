@@ -17,7 +17,7 @@ use vello::{kurbo, RenderParams, Renderer, RendererOptions, Scene};
 
 use crate::{
     canvas::VelloCanvas,
-    vello_fragment::{ExtractedVelloSceneInstance, VelloScene},
+    vello_scene::{ExtractedVelloSceneInstance, VelloScene},
 };
 
 #[derive(Resource)]
