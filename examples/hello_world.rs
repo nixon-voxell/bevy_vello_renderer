@@ -12,7 +12,7 @@ fn main() {
 }
 
 fn setup(mut commands: Commands, mut fragments: ResMut<Assets<VelloScene>>) {
-    let mut scene: Scene = Scene::new();
+    let mut scene = Scene::new();
 
     scene.fill(
         peniko::Fill::NonZero,
@@ -36,7 +36,7 @@ fn simple_animation(
     mut q_transforms: Query<&mut Transform, With<Handle<VelloScene>>>,
     time: Res<Time>,
 ) {
-    let sin_time: f32 = time.elapsed_seconds().sin().mul_add(0.5, 0.5);
+    let sin_time = time.elapsed_seconds().sin().mul_add(0.5, 0.5);
 
     for mut transform in q_transforms.iter_mut() {
         transform.scale = Vec3::lerp(Vec3::ONE * 0.5, Vec3::ONE * 1.0, sin_time);

@@ -59,8 +59,7 @@ pub fn extract_fragment_instances(
     >,
     mut previous_len: Local<usize>,
 ) {
-    let mut instances: Vec<(Entity, ExtractedVelloSceneInstance)> =
-        Vec::with_capacity(*previous_len);
+    let mut instances = Vec::with_capacity(*previous_len);
 
     for (entity, fragment_handle, global_transform, view_visibilty) in q_fragments.iter() {
         if view_visibilty.get() == false {
@@ -91,7 +90,7 @@ pub fn prepare_fragment_affines(
         return;
     };
 
-    let size_pixels: UVec2 = camera.physical_viewport_size.unwrap();
+    let size_pixels = camera.physical_viewport_size.unwrap();
     let (pixels_x, pixels_y) = (size_pixels.x as f32, size_pixels.y as f32);
 
     for (entity, fragment_instance) in q_fragment_instances.iter() {
@@ -120,12 +119,12 @@ pub fn prepare_fragment_affines(
             ndc_to_pixels_matrix * view_proj_matrix * model_matrix
         };
 
-        let transform: [f32; 16] = raw_transform.to_cols_array();
+        let transform = raw_transform.to_cols_array();
 
         // | a c e |
         // | b d f |
         // | 0 0 1 |
-        let transform: [f64; 6] = [
+        let transform = [
             transform[0] as f64,  // a
             -transform[1] as f64, // b
             -transform[4] as f64, // c
@@ -159,7 +158,6 @@ pub fn render_scene(
     };
 
     let mut scene = Scene::default();
-    // let mut builder = SceneBuilder::for_scene(&mut scene);
 
     // Background items: z ordered
     let mut vector_render_queue: Vec<(&ExtractedVelloSceneInstance, &PreparedAffine)> =
