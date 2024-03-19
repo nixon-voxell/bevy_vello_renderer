@@ -5,7 +5,7 @@ A minimal integration for rendering [Vello](https://github.com/linebender/vello)
 
 ## How it works?
 
-Bevy Vello Renderer is basically a custom render pipeline for rendering Vello `SceneFragment`s onto a texture which is then picked up by the Bevy camera.
+Bevy Vello Renderer is basically a custom render pipeline for rendering Vello `Scene`s onto a texture which is then picked up by the Bevy camera.
 
 ## License
 
