@@ -19,4 +19,4 @@ This dual-licensing approach is the de-facto standard in the Rust ecosystem and 
 
 ## Reference
 
-This project took alot of inspiration and reference from the [bevy-vello](https://github.com/vectorgameexperts/bevy-vello) project. If you want a more featured integration (which includes SVG & Lottie support), do check it out!
+This project took alot of inspiration and reference from the [bevy_vello](https://github.com/loopystudios/bevy_vello) project. If you want a more featured integration (which includes SVG & Lottie support), do check it out!
