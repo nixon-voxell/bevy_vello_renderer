@@ -47,9 +47,9 @@ pub struct PreparedAffine(pub kurbo::Affine);
 
 // Extract ========================================
 
-pub fn extract_fragment_instances(
+pub fn extract_scene_instances(
     mut commands: Commands,
-    q_fragments: Extract<
+    q_scenes: Extract<
         Query<(
             Entity,
             &Handle<VelloScene>,
@@ -61,7 +61,7 @@ pub fn extract_fragment_instances(
 ) {
     let mut instances = Vec::with_capacity(*previous_len);
 
-    for (entity, fragment_handle, global_transform, view_visibilty) in q_fragments.iter() {
+    for (entity, scene_handle, global_transform, view_visibilty) in q_scenes.iter() {
         if view_visibilty.get() == false {
             continue;
         }
@@ -69,7 +69,7 @@ pub fn extract_fragment_instances(
         instances.push((
             entity,
             ExtractedVelloSceneInstance {
-                scene_handle: fragment_handle.clone(),
+                scene_handle: scene_handle.clone(),
                 global_transform: global_transform.clone(),
             },
         ))
@@ -81,10 +81,10 @@ pub fn extract_fragment_instances(
 
 // Prepare ========================================
 
-pub fn prepare_fragment_affines(
+pub fn prepare_scene_affines(
     mut commands: Commands,
     q_camera: Query<(&ExtractedCamera, &ExtractedView)>,
-    q_fragment_instances: Query<(Entity, &ExtractedVelloSceneInstance)>,
+    q_scene_instances: Query<(Entity, &ExtractedVelloSceneInstance)>,
 ) {
     let Ok((camera, view)) = q_camera.get_single() else {
         return;
@@ -93,7 +93,7 @@ pub fn prepare_fragment_affines(
     let size_pixels = camera.physical_viewport_size.unwrap();
     let (pixels_x, pixels_y) = (size_pixels.x as f32, size_pixels.y as f32);
 
-    for (entity, fragment_instance) in q_fragment_instances.iter() {
+    for (entity, scene_instance) in q_scene_instances.iter() {
         let ndc_to_pixels_matrix = Mat4::from_cols_array_2d(&[
             [pixels_x / 2.0, 0.0, 0.0, pixels_x / 2.0],
             [0.0, pixels_y / 2.0, 0.0, pixels_y / 2.0],
@@ -104,7 +104,7 @@ pub fn prepare_fragment_affines(
 
         // The vello scene transform is world-space
         let raw_transform = {
-            let mut model_matrix = fragment_instance.global_transform.compute_matrix();
+            let mut model_matrix = scene_instance.global_transform.compute_matrix();
             model_matrix.w_axis.y *= -1.0;
 
             let (projection_mat, view_mat) = {
@@ -141,11 +141,11 @@ pub fn prepare_fragment_affines(
 
 // Render ========================================
 
-/// Transforms all the fragments extracted from the game world and places them in
+/// Transforms all the scenes extracted from the game world and places them in
 /// a scene, and renders the scene to a texture with WGPU
 #[allow(clippy::complexity)]
 pub fn render_scene(
-    q_fragment_instances: Query<(&ExtractedVelloSceneInstance, &PreparedAffine)>,
+    q_scene_instances: Query<(&ExtractedVelloSceneInstance, &PreparedAffine)>,
     scenes: Res<RenderAssets<VelloScene>>,
     mut vello_renderer: ResMut<VelloRenderer>,
     vello_canvas: Res<VelloCanvas>,
@@ -161,24 +161,19 @@ pub fn render_scene(
 
     // Background items: z ordered
     let mut vector_render_queue: Vec<(&ExtractedVelloSceneInstance, &PreparedAffine)> =
-        q_fragment_instances.iter().collect();
+        q_scene_instances.iter().collect();
     vector_render_queue.sort_by(|(a, _), (b, _)| {
         let a = a.global_transform.translation().z;
         let b = b.global_transform.translation().z;
         a.partial_cmp(&b).unwrap_or(std::cmp::Ordering::Equal)
     });
 
-    // Apply transforms to the respective fragments and add them to the
+    // Apply transforms to the respective scenes and add them to the
     // scene to be rendered
-    for (
-        ExtractedVelloSceneInstance {
-            scene_handle: fragment_handle,
-            ..
-        },
-        PreparedAffine(affine),
-    ) in vector_render_queue.iter()
+    for (ExtractedVelloSceneInstance { scene_handle, .. }, PreparedAffine(affine)) in
+        vector_render_queue.iter()
     {
-        let Some(vello_scene) = scenes.get(fragment_handle) else {
+        let Some(vello_scene) = scenes.get(scene_handle) else {
             continue;
         };
 

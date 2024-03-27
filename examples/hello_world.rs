@@ -11,7 +11,7 @@ fn main() {
         .run();
 }
 
-fn setup(mut commands: Commands, mut fragments: ResMut<Assets<VelloScene>>) {
+fn setup(mut commands: Commands, mut scenes: ResMut<Assets<VelloScene>>) {
     let mut scene = Scene::new();
 
     scene.fill(
@@ -25,7 +25,7 @@ fn setup(mut commands: Commands, mut fragments: ResMut<Assets<VelloScene>>) {
     commands.spawn(Camera2dBundle::default());
 
     commands.spawn(VelloSceneBundle {
-        scene: fragments.add(VelloScene {
+        scene: scenes.add(VelloScene {
             scene: scene.into(),
         }),
         ..default()

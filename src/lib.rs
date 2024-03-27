@@ -51,21 +51,19 @@ impl Plugin for VelloRenderPlugin {
             return;
         };
 
-        // TODO: reconsider this
-        // render_app.insert_resource(ExtractedPixelScale(1.0));
         render_app
             .add_systems(
                 ExtractSchedule,
                 (
                     // TODO: reconsider this
                     // render_pipeline::extract_pixel_scale.in_set(RenderSet::ExtractCommands),
-                    render_pipeline::extract_fragment_instances,
+                    render_pipeline::extract_scene_instances,
                 ),
             )
             .add_systems(
                 Render,
                 (
-                    render_pipeline::prepare_fragment_affines.in_set(RenderSet::Prepare),
+                    render_pipeline::prepare_scene_affines.in_set(RenderSet::Prepare),
                     render_pipeline::render_scene.in_set(RenderSet::Render),
                 ),
             );
